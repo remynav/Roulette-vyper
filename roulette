@@ -1,0 +1,53 @@
+
+creator: public(address)
+odds: public(uint256)
+turn: public(uint256)
+players: public(HashMap[address, bool])
+playersLost: public(HashMap[address, bool])
+
+
+@external 
+def construct(creator: address):
+    self.creator = creator
+
+
+@external
+def setOdds(oneInThisMany: uint256):
+    assert msg.sender == creator
+    self.odds = oneInThisMany
+
+@external 
+def addPlayer(player : address):
+    #checks if player has lost
+    assert self.playersLost[player] == fasle
+    #checks if player is already playing 
+    assert  self.players[player] == false
+    #adds to players
+    self.players[player]= true
+
+@external 
+def lose (player: address):
+    #access: make sure this is only internally callable
+    #clears the whole players list
+    #adds Player to the losers list
+
+@external
+def random ():
+    return block.timestamp
+
+@external
+def play ():
+    num: uint256 = self.random()
+    nextPlayer: address = self.players[turn]
+    if num == 1:
+        self.lose(nextPlayer)
+    else:
+        self.turn += 1
+        
+@external
+def isALoser (person: address) -> bool:
+    return self.playersLost[person] == True
+
+
+
+
